@@ -20,13 +20,52 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/:date?", function (req, res) {
+  let dateInput = req.params.date
+  const inputRegexDate = /\d{4}-\d{2}-\d{2}/
+  const inputRegexTs = /\d{13}/
+  let newDate = ''
+  let timestamp = ''
+  if (!dateInput) {
+    newDate = new Date()
+    timestamp = newDate.getTime()
+    res.json({unix: Number(timestamp), utc: newDate.toUTCString()})
+  }  
+  
+  if (inputRegexDate.test(dateInput)) {
+    newDate = new Date(dateInput)
+    timestamp = newDate.getTime()
+    res.json({ unix: Number(timestamp), utc: newDate.toUTCString() })
+  }
+
+  else if (inputRegexTs.test(dateInput)) {
+    timestamp = dateInput
+    newDate = new Date(Number(timestamp))
+    console.log('newdate', newDate)
+    res.json({ unix: Number(timestamp), utc: newDate.toUTCString() })
+  }
+
+  
+  
+  //console.log('newDate', newDate)
+
+  /* const fullYear = newDate.getFullYear()
+  const month = newDate.getMonth()
+  const day = newDate.getDay()
+  const hour = newDate.getHours()
+  const minute = newDate.getMinutes()
+  const second = newDate.getSeconds()
+  const millisecond = newDate.getMilliseconds()
+
+  const utcDate = new Date(Date.UTC(fullYear,
+    month, day, hour, minute, second, millisecond)); */
+
+  //console.log('utcDate', newDate.toUTCString())
 });
 
 
 
 // Listen on port set in environment variable or default to 3000
-var listener = app.listen(process.env.PORT || 3000, function () {
+var listener = app.listen(process.env.PORT || 3002, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
