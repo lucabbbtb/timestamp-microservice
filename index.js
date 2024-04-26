@@ -26,43 +26,32 @@ app.get("/api/:date?", function (req, res) {
   const inputRegexTs = /\d{13}/
   let newDate = ''
   let timestamp = ''
+  let right = false
   if (!dateInput) {
+    right = true
     newDate = new Date()
     timestamp = newDate.getTime()
     res.json({unix: Number(timestamp), utc: newDate.toUTCString()})
   }  
   
   if (inputRegexDate.test(dateInput)) {
+    right = true
     newDate = new Date(dateInput)
     timestamp = newDate.getTime()
     res.json({ unix: Number(timestamp), utc: newDate.toUTCString() })
   }
 
-  else if (inputRegexTs.test(dateInput)) {
+  if (inputRegexTs.test(dateInput)) {
+    right = true
     timestamp = dateInput
     newDate = new Date(Number(timestamp))
-    console.log('newdate', newDate)
     res.json({ unix: Number(timestamp), utc: newDate.toUTCString() })
   }
 
-  
-  
-  //console.log('newDate', newDate)
-
-  /* const fullYear = newDate.getFullYear()
-  const month = newDate.getMonth()
-  const day = newDate.getDay()
-  const hour = newDate.getHours()
-  const minute = newDate.getMinutes()
-  const second = newDate.getSeconds()
-  const millisecond = newDate.getMilliseconds()
-
-  const utcDate = new Date(Date.UTC(fullYear,
-    month, day, hour, minute, second, millisecond)); */
-
-  //console.log('utcDate', newDate.toUTCString())
+  if (right === false) {
+    res.json({ error : "Invalid Date" })
+  }
 });
-
 
 
 // Listen on port set in environment variable or default to 3000
